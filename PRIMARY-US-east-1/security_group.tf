@@ -193,6 +193,13 @@ resource "aws_security_group" "paytm-rds-sg" {
     to_port         = 3306
     protocol        = "tcp"
     security_groups = [ aws_security_group.backend-server-sg.id ]
+ }
+ ingress {
+    description     = "mysql/aroura"
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [ aws_security_group.bastion-host.id ]
   
  }
   egress {

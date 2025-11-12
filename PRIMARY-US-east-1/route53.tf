@@ -33,20 +33,20 @@ resource "aws_route53_record" "backend_dns" {
 
 
 #Create Private Hosted Zone
-# resource "aws_route53_zone" "private_zone" {
-#   name = "shrii.shop"
-#   vpc {
-#     vpc_id = aws_vpc_three-tier.id
-#   }
-#   comment       = "Private DNS zone for internal RDS"
-#   force_destroy = true
-# }
+resource "aws_route53_zone" "private_zone" {
+  name = "shrii.shop"
+  vpc {
+    vpc_id = aws_vpc.three-tier.id
+  }
+  comment       = "Private DNS zone for internal RDS"
+  force_destroy = true
+}
 
 #Use existing Route 53 private hosted zone
-data "aws_route53_zone" "private" {
-  name         = "shrii.shop"
-  private_zone = true
-}
+# data "aws_route53_zone" "private" {
+#   name         = "shrii.shop"
+#   private_zone = true
+# }
 
 #Associate existing private zone with your new VPC
 # resource "aws_route53_zone_association" "private_zone_assoc" {
@@ -56,8 +56,8 @@ data "aws_route53_zone" "private" {
 
 #Create Private DNS Record → RDS Endpoint
 resource "aws_route53_record" "rds_record" {
-  zone_id = data.aws_route53_zone.private.zone_id     #if not using exsiting private zone just cmmt this line
-  #zone_id = aws_route53_zone.private_zone.zone_id
+  #zone_id = data.aws_route53_zone.private.zone_id     #if not using exsiting private zone just cmmt this line
+  zone_id = aws_route53_zone.private_zone.zone_id
   name    = "rds.shrii.shop"
   type    = "CNAME"
   ttl     = 300
